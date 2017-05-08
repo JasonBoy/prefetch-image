@@ -1,0 +1,26 @@
+{
+  "name": "prefetch-image",
+  "version": "1.0.0",
+  "description": "Prefetch all images for your web app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JasonBoy/prefetch-image.git"
+  },
+  "keywords": [
+    "prefetch",
+    "preload",
+    "image",
+    "promise",
+    "h5"
+  ],
+  "author": "Jason Jiang <jasonlikenfs@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JasonBoy/prefetch-image/issues"
+  },
+  "homepage": "https://github.com/JasonBoy/prefetch-image#readme"
+}
