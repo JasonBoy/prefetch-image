@@ -23,6 +23,7 @@ prefetchImages(images, options)
     //start init your page logic...
   });
 ```
+> Don't forget to add `Cache-Control` for your assets
 
 ### Options
 
