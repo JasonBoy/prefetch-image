@@ -18,7 +18,6 @@
     "prefetch",
     "preload",
     "image",
-    "promise",
     "h5"
   ],
   "author": "Jason Jiang <jasonlikenfs@gmail.com>",
