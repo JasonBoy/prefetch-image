@@ -2,8 +2,12 @@
   "name": "prefetch-image",
   "version": "1.0.0",
   "description": "Prefetch all images for your web app",
-  "main": "index.js",
+  "main": "dist/prefetch-image.js",
+  "main:next": "index.js",
   "scripts": {
+    "build:dev": "NODE_ENV=development webpack --progress",
+    "build:prod": "NODE_ENV=production webpack --progress",
+    "build": "npm run build:dev && npm run build:prod",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,5 +26,12 @@
   "bugs": {
     "url": "https://github.com/JasonBoy/prefetch-image/issues"
   },
-  "homepage": "https://github.com/JasonBoy/prefetch-image#readme"
+  "homepage": "https://github.com/JasonBoy/prefetch-image#readme",
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-preset-es2015": "^6.24.1",
+    "webpack": "^2.5.1"
+  }
 }

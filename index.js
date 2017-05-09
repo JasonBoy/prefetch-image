@@ -1,3 +1,9 @@
+/*!
+ * @license MIT
+ * Prefetch all images for your web app, especially for mobile/h5 promotion pages.
+ * https://github.com/JasonBoy/prefetch-image
+ */
+
 'use strict';
 
 function prefetchImages(images, options = {}) {
@@ -73,7 +79,7 @@ function loadImage (src, container) {
 function addAllImagesToDOM(imageElements) {
   const body = document.querySelector('body');
   const imagesWrapper = document.createElement('div');
-  imagesWrapper.setAttribute('class', 'prefetch-image-wrapper');
+  imagesWrapper.setAttribute('class', `prefetch-image-wrapper_${Math.random()}`);
   imagesWrapper.style.width = 0;
   imagesWrapper.style.height = 0;
   imagesWrapper.style.overflow = 'hidden';
