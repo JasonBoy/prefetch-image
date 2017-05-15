@@ -1,4 +1,4 @@
-# prefetch-image
+# prefetch-image [![npm](https://img.shields.io/npm/v/prefetch-image.svg)](https://www.npmjs.com/package/prefetch-image)
 Prefetch all images for your web app, especially for mobile/h5 promotion pages.
 
 ## Usage
