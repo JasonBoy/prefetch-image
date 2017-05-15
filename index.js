@@ -44,7 +44,7 @@ function prefetchImages(images, options = {}) {
   }
   return Promise.all(domainPromises)
     .then((results) => {
-      console.info('[prefetch-image]: Images loaded for all domains!');
+      options.debug && console.info('[prefetch-image]: Images loaded for all domains!');
       return Promise.resolve(results);
     })
     .catch((err) => {
@@ -81,7 +81,7 @@ function prefetchImageEachDomain (images, options, domain) {
   return Promise.all(bulkImagePromises)
     .then(() => {
       addAllImagesToDOM(imageLoadingInfo.imagesContainer);
-      console.info(`[prefetch-image]: Images loaded for domain [${domain || location.origin}], length [${images.length}]`);
+      options.debug && console.info(`[prefetch-image]: Images loaded for domain [${domain || location.origin}], length [${images.length}]`);
       return Promise.resolve(imageLoadingInfo.imagesContainer);
     })
     .catch((err) => {
