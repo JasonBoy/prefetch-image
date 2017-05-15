@@ -8,7 +8,6 @@
 
 import joinUrl from 'url-join';
 
-
 /**
  * Preload all images
  * @param {Array|object} images, use object if your images are on different domains
@@ -90,6 +89,12 @@ function prefetchImageEachDomain (images, options, domain) {
     });
 }
 
+/**
+ * Load images on an array
+ * @param {Array} images
+ * @param {object} imageLoadingInfo info about this phase of loading
+ * @return {Promise}
+ */
 function loadImages(images, imageLoadingInfo) {
   const imagePromises = [];
   const allImageLength = images.length;
@@ -113,6 +118,12 @@ function loadImages(images, imageLoadingInfo) {
   return Promise.all(imagePromises);
 }
 
+/**
+ * Start loading every single image
+ * @param {string} src image src
+ * @param {array} container new Image instance will be added to this container
+ * @return {Promise}
+ */
 function loadImage(src, container) {
   // console.log('--> start loading img: %s', src);
   return new Promise((resolve) => {
@@ -131,6 +142,10 @@ function loadImage(src, container) {
   });
 }
 
+/**
+ * Add all images loaded to dom to ensure cache
+ * @param {Array} imageElements Image objects in an array
+ */
 function addAllImagesToDOM(imageElements) {
   const body = document.querySelector('body');
   const imagesWrapper = document.createElement('div');
@@ -146,6 +161,12 @@ function addAllImagesToDOM(imageElements) {
   body.appendChild(imagesWrapper);
 }
 
+/**
+ * Join domain for urls
+ * @param {string} domain
+ * @param {array} urls url paths
+ * @return {Array}
+ */
 function joinUrls (domain, urls) {
   const newUrls = [];
   urls.forEach((url) => {

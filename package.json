@@ -1,6 +1,6 @@
 {
   "name": "prefetch-image",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Prefetch all images for your web app",
   "main": "dist/prefetch-image.js",
   "main:next": "index.js",
