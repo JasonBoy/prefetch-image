@@ -2208,6 +2208,10 @@ uid-number@^0.0.6:
   version "0.0.6"
   resolved "http://registry.npm.taobao.org/uid-number/download/uid-number-0.0.6.tgz#0ea10e8035e8eb5b8e4449f06da1c730663baa81"
 
+url-join@2.0.1:
+  version "2.0.1"
+  resolved "http://registry.npm.taobao.org/url-join/download/url-join-2.0.1.tgz#04b446fcd359a2fa42cc9b6962b219b91ddfe1a8"
+
 url@^0.11.0:
   version "0.11.0"
   resolved "http://registry.npm.taobao.org/url/download/url-0.11.0.tgz#3838e97cfc60521eb73c525a8e55bfdd9e2e28f1"

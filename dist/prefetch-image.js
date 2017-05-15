@@ -73,11 +73,71 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+(function (name, context, definition) {
+  if (typeof module !== 'undefined' && module.exports) module.exports = definition();else if (true) !(__WEBPACK_AMD_DEFINE_FACTORY__ = (definition),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
+				__WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));else context[name] = definition();
+})('urljoin', undefined, function () {
+
+  function startsWith(str, searchString) {
+    return str.substr(0, searchString.length) === searchString;
+  }
+
+  function normalize(str, options) {
+
+    if (startsWith(str, 'file://')) {
+
+      // make sure file protocol has max three slashes
+      str = str.replace(/(\/{0,3})\/*/g, '$1');
+    } else {
+
+      // make sure protocol is followed by two slashes
+      str = str.replace(/:\//g, '://');
+
+      // remove consecutive slashes
+      str = str.replace(/([^:\s%3A])\/+/g, '$1/');
+    }
+
+    // remove trailing slash before parameters or hash
+    str = str.replace(/\/(\?|&|#[^!])/g, '$1');
+
+    // replace ? in parameters with &
+    str = str.replace(/(\?.+)\?/g, '$1&');
+
+    return str;
+  }
+
+  return function () {
+    var input = arguments;
+    var options = {};
+
+    if (_typeof(arguments[0]) === 'object') {
+      // new syntax with array and options
+      input = arguments[0];
+      options = arguments[1] || {};
+    }
+
+    var joined = [].slice.call(input, 0).join('/');
+    return normalize(joined, options);
+  };
+});
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -92,9 +152,59 @@ return /******/ (function(modules) { // webpackBootstrap
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _urlJoin = __webpack_require__(0);
+
+var _urlJoin2 = _interopRequireDefault(_urlJoin);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Preload all images
+ * @param {Array|object} images, use object if your images are on different domains
+ * object:
+ * {
+ *   "http://domain1.com": ['/image1.png', '/image2.png'],
+ *   "http://domain2.com": ['/image3.png', '/image4.png'],
+ * }
+ * @param {object=} options
+ * @return {Promise}
+ */
 function prefetchImages(images) {
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
+  if (!images) {
+    console.error('[prefetch-image]: images not provided, pls pass images in Array or object!');
+    return Promise.reject({});
+  }
+  var isArray = Array.isArray(images);
+  if (isArray) {
+    return prefetchImageEachDomain(images, options);
+  }
+  var domainPromises = [];
+  var domainKeys = Object.keys(images);
+  var i = 0;
+  for (; i < domainKeys.length; i++) {
+    var domain = domainKeys[i];
+    domainPromises.push(prefetchImageEachDomain(joinUrls(domain, images[domain]), options, domain));
+  }
+  return Promise.all(domainPromises).then(function (results) {
+    console.info('[prefetch-image]: Images loaded for all domains!');
+    return Promise.resolve(results);
+  }).catch(function (err) {
+    console.error('[prefetch-image]: ', err);
+    return Promise.reject(null);
+  });
+}
+
+/**
+ * Preload all images in the same domain
+ * @param {Array} images all image urls in the same domain
+ * @param {object=} options
+ * @param {string=} domain current domain
+ * @return {Promise}
+ */
+function prefetchImageEachDomain(images, options, domain) {
   var concurrency = options.concurrency || 6;
   var imageLoadingInfo = {
     start: 0,
@@ -113,7 +223,7 @@ function prefetchImages(images) {
   // console.log('bulkImagePromisesLength: %d', bulkImagePromises.length);
   return Promise.all(bulkImagePromises).then(function () {
     addAllImagesToDOM(imageLoadingInfo.imagesContainer);
-    console.info('[prefetch-image]: All images loaded!');
+    console.info('[prefetch-image]: Images loaded for domain [' + (domain || location.origin) + '], length [' + images.length + ']');
     return Promise.resolve(imageLoadingInfo.imagesContainer);
   }).catch(function (err) {
     console.error('[prefetch-image]: ', err);
@@ -175,6 +285,14 @@ function addAllImagesToDOM(imageElements) {
     imagesWrapper.appendChild(img);
   });
   body.appendChild(imagesWrapper);
+}
+
+function joinUrls(domain, urls) {
+  var newUrls = [];
+  urls.forEach(function (url) {
+    newUrls.push((0, _urlJoin2.default)(domain, url));
+  });
+  return newUrls;
 }
 
 exports.default = prefetchImages;

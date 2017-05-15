@@ -6,7 +6,62 @@
 
 'use strict';
 
+import joinUrl from 'url-join';
+
+
+/**
+ * Preload all images
+ * @param {Array|object} images, use object if your images are on different domains
+ * object:
+ * {
+ *   "http://domain1.com": ['/image1.png', '/image2.png'],
+ *   "http://domain2.com": ['/image3.png', '/image4.png'],
+ * }
+ * @param {object=} options
+ * @return {Promise}
+ */
 function prefetchImages(images, options = {}) {
+  if(!images) {
+    console.error('[prefetch-image]: images not provided, pls pass images in Array or object!');
+    return Promise.reject({});
+  }
+  const isArray = Array.isArray(images);
+  if(isArray) {
+    return prefetchImageEachDomain(images, options);
+  }
+  const domainPromises = [];
+  const domainKeys = Object.keys(images);
+  let i =0;
+  for(; i < domainKeys.length; i++) {
+    const domain = domainKeys[i];
+    domainPromises.push(
+      prefetchImageEachDomain(
+        joinUrls(domain, images[domain]),
+        options,
+        domain
+      )
+    );
+  }
+  return Promise.all(domainPromises)
+    .then((results) => {
+      console.info('[prefetch-image]: Images loaded for all domains!');
+      return Promise.resolve(results);
+    })
+    .catch((err) => {
+      console.error('[prefetch-image]: ', err);
+      return Promise.reject(null);
+    })
+    ;
+}
+
+/**
+ * Preload all images in the same domain
+ * @param {Array} images all image urls in the same domain
+ * @param {object=} options
+ * @param {string=} domain current domain
+ * @return {Promise}
+ */
+function prefetchImageEachDomain (images, options, domain) {
   const concurrency = options.concurrency || 6;
   const imageLoadingInfo = {
     start: 0,
@@ -26,7 +81,7 @@ function prefetchImages(images, options = {}) {
   return Promise.all(bulkImagePromises)
     .then(() => {
       addAllImagesToDOM(imageLoadingInfo.imagesContainer);
-      console.info('[prefetch-image]: All images loaded!');
+      console.info(`[prefetch-image]: Images loaded for domain [${domain || location.origin}], length [${images.length}]`);
       return Promise.resolve(imageLoadingInfo.imagesContainer);
     })
     .catch((err) => {
@@ -35,7 +90,7 @@ function prefetchImages(images, options = {}) {
     });
 }
 
-function loadImages (images, imageLoadingInfo) {
+function loadImages(images, imageLoadingInfo) {
   const imagePromises = [];
   const allImageLength = images.length;
   const info = imageLoadingInfo;
@@ -48,7 +103,7 @@ function loadImages (images, imageLoadingInfo) {
   let i = start;
   for (; i < end; i++) {
     const src = images[i];
-    if(!src) continue;
+    if (!src) continue;
     imagePromises.push(loadImage(src, info.imagesContainer));
   }
   info.start = end;
@@ -58,7 +113,7 @@ function loadImages (images, imageLoadingInfo) {
   return Promise.all(imagePromises);
 }
 
-function loadImage (src, container) {
+function loadImage(src, container) {
   // console.log('--> start loading img: %s', src);
   return new Promise((resolve) => {
     const img = new Image();
@@ -89,6 +144,14 @@ function addAllImagesToDOM(imageElements) {
     imagesWrapper.appendChild(img);
   });
   body.appendChild(imagesWrapper);
+}
+
+function joinUrls (domain, urls) {
+  const newUrls = [];
+  urls.forEach((url) => {
+    newUrls.push(joinUrl(domain, url));
+  });
+  return newUrls;
 }
 
 export default prefetchImages;
