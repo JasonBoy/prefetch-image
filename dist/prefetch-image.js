@@ -189,7 +189,7 @@ function prefetchImages(images) {
     domainPromises.push(prefetchImageEachDomain(joinUrls(domain, images[domain]), options, domain));
   }
   return Promise.all(domainPromises).then(function (results) {
-    console.info('[prefetch-image]: Images loaded for all domains!');
+    options.debug && console.info('[prefetch-image]: Images loaded for all domains!');
     return Promise.resolve(results);
   }).catch(function (err) {
     console.error('[prefetch-image]: ', err);
@@ -223,7 +223,7 @@ function prefetchImageEachDomain(images, options, domain) {
   // console.log('bulkImagePromisesLength: %d', bulkImagePromises.length);
   return Promise.all(bulkImagePromises).then(function () {
     addAllImagesToDOM(imageLoadingInfo.imagesContainer);
-    console.info('[prefetch-image]: Images loaded for domain [' + (domain || location.origin) + '], length [' + images.length + ']');
+    options.debug && console.info('[prefetch-image]: Images loaded for domain [' + (domain || location.origin) + '], length [' + images.length + ']');
     return Promise.resolve(imageLoadingInfo.imagesContainer);
   }).catch(function (err) {
     console.error('[prefetch-image]: ', err);
@@ -231,6 +231,12 @@ function prefetchImageEachDomain(images, options, domain) {
   });
 }
 
+/**
+ * Load images on an array
+ * @param {Array} images
+ * @param {object} imageLoadingInfo info about this phase of loading
+ * @return {Promise}
+ */
 function loadImages(images, imageLoadingInfo) {
   var imagePromises = [];
   var allImageLength = images.length;
@@ -254,6 +260,12 @@ function loadImages(images, imageLoadingInfo) {
   return Promise.all(imagePromises);
 }
 
+/**
+ * Start loading every single image
+ * @param {string} src image src
+ * @param {array} container new Image instance will be added to this container
+ * @return {Promise}
+ */
 function loadImage(src, container) {
   // console.log('--> start loading img: %s', src);
   return new Promise(function (resolve) {
@@ -272,6 +284,10 @@ function loadImage(src, container) {
   });
 }
 
+/**
+ * Add all images loaded to dom to ensure cache
+ * @param {Array} imageElements Image objects in an array
+ */
 function addAllImagesToDOM(imageElements) {
   var body = document.querySelector('body');
   var imagesWrapper = document.createElement('div');
@@ -287,6 +303,12 @@ function addAllImagesToDOM(imageElements) {
   body.appendChild(imagesWrapper);
 }
 
+/**
+ * Join domain for urls
+ * @param {string} domain
+ * @param {array} urls url paths
+ * @return {Array}
+ */
 function joinUrls(domain, urls) {
   var newUrls = [];
   urls.forEach(function (url) {
