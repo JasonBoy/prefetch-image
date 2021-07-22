@@ -42,7 +42,7 @@ if(PROD_MODE) {
   plugins.push(new webpack.optimize.UglifyJsPlugin({
     compress: {
       warnings: false,
-      drop_console: true,
+      drop_console: false,
       dead_code: true,
       drop_debugger: true,
     },
